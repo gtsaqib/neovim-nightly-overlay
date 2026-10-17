@@ -28,7 +28,6 @@ jobs:
         with:
           name: gtsaqib
           authToken: ${{ secrets.CACHIX_AUTH_TOKEN }}
-          extraPullNames: nix-community
 
       - name: Update Neovim source
         run: nix flake update neovim-src
