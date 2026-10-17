@@ -15,10 +15,10 @@
 
   nixConfig = {
     extra-substituters = [
-      "https://nix-community.cachix.org"
+      "https://gtsaqib.cachix.org"
     ];
     extra-trusted-public-keys = [
-      "nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs="
+      "gtsaqib.cachix.org-1:2o0uyw7seQ59glhJ9Epk8isXlFbvN+oL5YElsZFOMZ8="
     ];
   };
 
