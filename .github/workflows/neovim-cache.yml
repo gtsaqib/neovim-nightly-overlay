@@ -1,0 +1,43 @@
+name: Build and cache Neovim nightly
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "17 3 * * *"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: neovim-nightly-cache
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+
+      - name: Install Nix
+        uses: cachix/install-nix-action@v31
+
+      - name: Configure Cachix
+        uses: cachix/cachix-action@v17
+        with:
+          name: gtsaqib
+          authToken: ${{ secrets.CACHIX_AUTH_TOKEN }}
+          extraPullNames: nix-community
+
+      - name: Update Neovim source
+        run: nix flake update neovim-src
+
+      - name: Configure Git
+        run: git config user.name "github-actions[bot]" && git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+      - name: Commit updated source pin
+        run: if ! git diff --quiet -- flake.lock; then git add flake.lock && git commit -m "chore: update Neovim source" && git push origin "HEAD:${GITHUB_REF_NAME}"; fi
+
+      - name: Build Neovim nightly
+        run: nix build --accept-flake-config --print-build-logs --no-link .#packages.x86_64-linux.default
